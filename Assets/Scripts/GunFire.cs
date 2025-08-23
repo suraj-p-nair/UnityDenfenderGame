@@ -3,18 +3,19 @@ using UnityEngine;
 public class GunFire : MonoBehaviour
 {
     public GameObject bulletPrefab;   // assign in Inspector
-    private float fireRate = 0.7f;     // bullets per second
-    private float nextFireTime = 0f;  // timer
+    private float fireRate = 0.5f;     // bullets per second
+    private float fireTimer = 0f;
 
     void Update()
     {
-        // Auto-fire (no key needed)
-        if (Time.time >= nextFireTime)
+        fireTimer += Time.deltaTime;
+        if (fireTimer >= fireRate)
         {
             Fire();
-            nextFireTime = Time.time + fireRate; // schedule next shot
+            fireTimer = 0f;
         }
     }
+
 
     void Fire()
     {
