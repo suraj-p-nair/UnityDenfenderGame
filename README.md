@@ -56,3 +56,42 @@ Kinematic Rigidbody2D allows movement while still detecting collisions without g
 
 Assigning a target per bullet avoids the need for a central monster list.
 
+
+## **Code Refactoring & HP Text**
+
+Refactored projectiles into a centralized structure:
+
+Projectiles base class with Initialize(ProjectileType type)
+
+Stats stored in ProjectileConfig dictionary
+
+Prefab initialization via Projectiles.InitializePrefab()
+
+Refactored monsters into a parallel architecture:
+
+Monsters base class holding common stats (health, speed, count, rate)
+
+MonsterConfig stores per-type stats (Square, Circle, Boss)
+
+MonsterFactory handles spawning, tracking active monsters, and providing closest monster queries
+
+SquareMonster inherits from Monsters and handles movement, damage, and destruction events
+
+Added Boss prefab using the same SquareMonster script for testing purposes
+
+GameEngine now initializes both projectiles and monsters using their respective factories/configs, removing hard-coded stats and spawn parameters from the scene
+
+Added floating HP display above monsters using TextMeshPro 3D text, with offset and camera-facing rotation
+
+HP display updates dynamically based on monster health
+
+Offset is standardized per monster prefab
+
+What was learned:
+
+Centralizing configs allows adding new projectile or monster types without touching multiple scripts
+
+Factories decouple spawning logic from scene/game logic
+
+Proper prefab setup (scale, pivot, offsets) is critical for consistent UI (HP text) across different monster shapes
+
