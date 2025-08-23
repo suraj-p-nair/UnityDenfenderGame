@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 public class Bullet : MonoBehaviour
 {
-    private float speed = 3f;
-    //private int damage = 10;
-    private GameObject monster;
+    private float speed = 3.5f;
+    public int damage = 10;
+    private Transform monster;
     private Vector3 monsterPosition;
+    private Vector3 direction;
     void Start()
     {
-        monster = GameObject.FindGameObjectsWithTag("Monster").FirstOrDefault();
+        monster = GameObject.FindGameObjectsWithTag("Monster").FirstOrDefault().transform;
         if (monster != null)
             monsterPosition = monster.transform.position;
-        Destroy(gameObject, 2f);
     }
     void Update()
     {
-        if (monster == null)
+        if (monster != null)
         {
-            return;
+            direction = (monsterPosition - transform.position).normalized;
         }
-        Vector3 direction = (monsterPosition - transform.position).normalized;
         transform.Translate(direction * speed * Time.deltaTime);
     }
 }
