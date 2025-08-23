@@ -1,0 +1,74 @@
+﻿name: Update README on Commit
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches-ignore:
+      - develop
+      - main
+      - release/**
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    if: github.event.created == false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get last commit details
+        id: commit
+        run: |
+          AUTHOR=$(git log -1 --pretty=format:'%an')
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          COMMIT_DESC=$(git log -1 --pretty=%b)
+
+          echo "author=$AUTHOR" >> $GITHUB_ENV
+          echo "msg=$COMMIT_MSG" >> $GITHUB_ENV
+          echo "desc=$COMMIT_DESC" >> $GITHUB_ENV
+
+      - name: Append commit details to README.md
+        run: |
+          {
+              echo ""
+              echo "## ${{
+                env.msg
+              }}"
+              echo ""
+              echo "${{
+                env.desc
+              }}"
+              echo ""
+          } >> README.md
+
+      - name: Commit and push changes
+        id: push_changes
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update README with commit: ${{ env.msg }}" || echo "No changes to commit"
+          git push || echo "push_failed=true" >> $GITHUB_ENV
+
+      - name: Write workflow summary
+        if: always()
+        run: |
+          echo "## Commit Info" >> $GITHUB_STEP_SUMMARY
+          echo "- Author: ${{ env.author }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Message: ${{ env.msg }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Description" >> $GITHUB_STEP_SUMMARY
+          echo "${{ env.desc }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "${{ env.push_failed }}" == "true" ]]; then
+            echo "Push failed: README update could not be pushed." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "README.md updated and pushed successfully." >> $GITHUB_STEP_SUMMARY
+          fi
