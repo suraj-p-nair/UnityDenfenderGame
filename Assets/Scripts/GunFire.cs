@@ -3,7 +3,7 @@ using UnityEngine;
 public class GunFire : MonoBehaviour
 {
     public GameObject bulletPrefab;   // assign in Inspector
-    private float fireRate = 2f;     // bullets per second
+    private float fireRate = 0.7f;     // bullets per second
     private float nextFireTime = 0f;  // timer
 
     void Update()
