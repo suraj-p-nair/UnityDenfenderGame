@@ -21,12 +21,23 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get last commit details
+      - name: Get last commit message and description
         id: commit
         run: |
           AUTHOR=$(git log -1 --pretty=format:'%an')
           COMMIT_MSG=$(git log -1 --pretty=%s)
           COMMIT_DESC=$(git log -1 --pretty=%b)
+
+          # Escape special characters for GitHub Actions env
+          COMMIT_MSG="${COMMIT_MSG//'%'/'%25'}"
+          COMMIT_MSG="${COMMIT_MSG//$'\n'/'%0A'}"
+          COMMIT_MSG="${COMMIT_MSG//$'\r'/'%0D'}"
+          COMMIT_MSG="${COMMIT_MSG//:/'%3A'}"
+
+          COMMIT_DESC="${COMMIT_DESC//'%'/'%25'}"
+          COMMIT_DESC="${COMMIT_DESC//$'\n'/'%0A'}"
+          COMMIT_DESC="${COMMIT_DESC//$'\r'/'%0D'}"
+          COMMIT_DESC="${COMMIT_DESC//:/'%3A'}"
 
           echo "author=$AUTHOR" >> $GITHUB_ENV
           echo "msg=$COMMIT_MSG" >> $GITHUB_ENV
@@ -34,41 +45,35 @@ jobs:
 
       - name: Append commit details to README.md
         run: |
+          MSG=$(echo "${{ env.msg }}" | sed 's/%0A/\n/g' | sed 's/%3A/:/g' | sed 's/%25/%/g')
+          DESC=$(echo "${{ env.desc }}" | sed 's/%0A/\n/g' | sed 's/%3A/:/g' | sed 's/%25/%/g')
           {
               echo ""
-              echo "## ${{
-                env.msg
-              }}"
+              echo "## **$MSG**"
               echo ""
-              echo "${{
-                env.desc
-              }}"
+              echo "$DESC"
               echo ""
           } >> README.md
 
       - name: Commit and push changes
-        id: push_changes
         run: |
-          set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
           git commit -m "Update README with commit: ${{ env.msg }}" || echo "No changes to commit"
-          git push || echo "push_failed=true" >> $GITHUB_ENV
+          git push
 
-      - name: Write workflow summary
-        if: always()
+      - name: Add workflow summary
         run: |
-          echo "## Commit Info" >> $GITHUB_STEP_SUMMARY
-          echo "- Author: ${{ env.author }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Message: ${{ env.msg }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Description" >> $GITHUB_STEP_SUMMARY
-          echo "${{ env.desc }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [[ "${{ env.push_failed }}" == "true" ]]; then
-            echo "Push failed: README update could not be pushed." >> $GITHUB_STEP_SUMMARY
-          else
-            echo "README.md updated and pushed successfully." >> $GITHUB_STEP_SUMMARY
-          fi
+          MSG=$(echo "${{ env.msg }}" | sed 's/%0A/\n/g' | sed 's/%3A/:/g' | sed 's/%25/%/g')
+          DESC=$(echo "${{ env.desc }}" | sed 's/%0A/\n/g' | sed 's/%3A/:/g' | sed 's/%25/%/g')
+          {
+              echo "### Last Commit Processed"
+              echo ""
+              echo "**Author:** ${{ env.author }}"
+              echo ""
+              echo "**Message:** $MSG"
+              echo ""
+              echo "**Description:**"
+              echo "$DESC"
+          } >> $GITHUB_STEP_SUMMARY
