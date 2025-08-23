@@ -3,7 +3,7 @@ using UnityEngine;
 public class GunFire : MonoBehaviour
 {
     public GameObject bulletPrefab;   // assign in Inspector
-    private float fireRate = 0.5f;     // bullets per second
+    private float fireRate = 0.5f;
     private float fireTimer = 0f;
 
     void Update()
@@ -16,9 +16,11 @@ public class GunFire : MonoBehaviour
         }
     }
 
-
     void Fire()
     {
+        if (MonsterFactory.Instance == null) return;
+        if (!MonsterFactory.Instance.AnyMonstersExist()) return;
+
         Instantiate(bulletPrefab, transform.position, transform.rotation);
     }
 }

@@ -371,6 +371,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1578697471}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1037813377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1037813379}
+  - component: {fileID: 1037813378}
+  m_Layer: 0
+  m_Name: GameController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1037813378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037813377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7e4597177a767c44b5777a00ba1da0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterPrefab: {fileID: 2475976400215454567, guid: c15a5876066677340a121c4be850ddda, type: 3}
+  bossPrefab: {fileID: 8297972120462886973, guid: 54954f5130511de4695d79705c2e2b4f, type: 3}
+  bulletPrefab: {fileID: 7773465406062771425, guid: 6a2c11f2efec22549a25bb612eadac56, type: 3}
+--- !u!4 &1037813379
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037813377}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.71066, y: -4.35813, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1168568874
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,13 +521,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1578697469}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 396ab8a65f90efe46a3954691e2bcc64, type: 3}
+  m_Script: {fileID: 11500000, guid: 9312ce6aa3864764f99b7482bd145a03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   P0: {fileID: 1918330827}
   P1: {fileID: 768754213}
-  monsterPrefab: {fileID: 2475976400215454567, guid: c15a5876066677340a121c4be850ddda, type: 3}
-  spawnRate: 2
 --- !u!1 &1918330826
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,3 +653,4 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 1968519585}
   - {fileID: 1578697471}
+  - {fileID: 1037813379}
