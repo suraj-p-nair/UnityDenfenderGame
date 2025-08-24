@@ -9,7 +9,7 @@ public class MonsterFactory : MonoBehaviour
     public Transform P0;
     public Transform P1;
 
-    private List<GameObject> activeMonsters = new();
+    private readonly List<GameObject> activeMonsters = new();
 
     private void Awake()
     {
@@ -24,6 +24,45 @@ public class MonsterFactory : MonoBehaviour
     }
 
     public bool AnyMonstersExist() => activeMonsters.Count > 0;
+
+    public void SpawnMonsters(MonsterType type, GameObject prefab)
+    {
+        if (!MonsterConfig.monsters.TryGetValue(type, out var stats))
+        {
+            Debug.LogWarning($"No config found for {type}");
+            return;
+        }
+
+        StartCoroutine(SpawnLoop(prefab, stats));
+    }
+
+    private IEnumerator SpawnLoop(GameObject prefab, MonsterStats stats)
+    {
+        for (int i = 0; i < stats.count; i++)
+        {
+            SpawnMonster(prefab, stats);
+            yield return new WaitForSeconds(stats.rate);
+        }
+    }
+
+    private void SpawnMonster(GameObject prefab, MonsterStats stats)
+    {
+        Vector3 spawnPos = Vector3.Lerp(P0.position, P1.position, Random.value);
+        GameObject monsterGO = Instantiate(prefab, spawnPos, Quaternion.identity);
+
+        var monsterComp = monsterGO.GetComponent<Monsters>();
+        if (monsterComp != null)
+        {
+            monsterComp.Initialize(stats);
+            activeMonsters.Add(monsterGO);
+
+            monsterComp.OnMonsterDestroyed += () => activeMonsters.Remove(monsterGO);
+        }
+        else
+        {
+            Debug.LogWarning($"{prefab.name} missing Monsters component");
+        }
+    }
 
     public Transform GetClosestMonster(Vector3 position)
     {
@@ -44,44 +83,5 @@ public class MonsterFactory : MonoBehaviour
         }
 
         return closest?.transform;
-    }
-
-    public void SpawnMonsters(MonsterType type, GameObject monsterPrefab)
-    {
-        if (!MonsterConfig.monsters.TryGetValue(type, out var stats))
-        {
-            Debug.LogWarning($"Monster config missing for {type}");
-            return;
-        }
-
-        StartCoroutine(SpawnLoop(monsterPrefab, stats, type));
-    }
-
-    private IEnumerator SpawnLoop(GameObject prefab, MonsterStats stats, MonsterType type)
-    {
-        for (int i = 0; i < stats.count; i++)
-        {
-            SpawnMonster(prefab, stats, type);
-            yield return new WaitForSeconds(stats.rate);
-        }
-    }
-
-    private void SpawnMonster(GameObject prefab, MonsterStats stats, MonsterType type)
-    {
-        Vector3 spawnPos = Vector3.Lerp(P0.position, P1.position, Random.value);
-        GameObject monsterGO = Instantiate(prefab, spawnPos, Quaternion.identity);
-
-        var monsterComp = monsterGO.GetComponent<Monsters>();
-        if (monsterComp != null)
-        {
-            monsterComp.Initialize(type, stats.health, stats.speed);
-            activeMonsters.Add(monsterGO);
-
-            monsterComp.OnMonsterDestroyed += () => activeMonsters.Remove(monsterGO);
-        }
-        else
-        {
-            Debug.LogWarning($"Prefab {prefab.name} does not have a Monsters component!");
-        }
     }
 }

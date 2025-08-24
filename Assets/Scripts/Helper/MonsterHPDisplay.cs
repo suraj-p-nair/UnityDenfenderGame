@@ -8,11 +8,11 @@ public class MonsterHPDisplay : MonoBehaviour
     public RectTransform canvasRect;    // Canvas RectTransform
     private float yOffset = 0.5f;        // Height above monster
 
-    private Monsters monster;
+    private IHasHealth healthEntity;
 
     void Awake()
     {
-        monster = GetComponent<Monsters>();
+        healthEntity = GetComponent<IHasHealth>();
         if (hpText == null)
             Debug.LogWarning("HP Text not assigned. Please assign a TextMeshProUGUI object.");
         if (canvasRect == null)
@@ -21,10 +21,10 @@ public class MonsterHPDisplay : MonoBehaviour
 
     void LateUpdate()
     {
-        if (monster == null || hpText == null || canvasRect == null) return;
+        if (healthEntity == null || hpText == null || canvasRect == null) return;
 
         // Update HP text
-        hpText.text = monster.health.ToString();
+        hpText.text = healthEntity.Health.ToString();
 
         // World position above monster
         Vector3 worldPos = transform.position + Vector3.up * yOffset;
