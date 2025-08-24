@@ -1,27 +1,32 @@
 ﻿using UnityEngine;
 using System;
 
-public class Monsters : MonoBehaviour
+public class Monsters : MonoBehaviour, IHasHealth
 {
-    public MonsterType monsterType;
-    public int health;
-    public float speed;
+    public int _health;
+    public float _speed;
+    public int _damage;
+
+    public int Health => _health;
     public event Action OnMonsterDestroyed;
 
-    public bool IsDead => health <= 0;
-
-    // Initialize called by MonsterFactory
-    public virtual void Initialize(MonsterType type, int health, float speed)
+    public void Initialize(MonsterStats stats)
     {
-        this.monsterType = type;
-        this.health = health;
-        this.speed = speed;
+        _health = stats.health;
+        _speed = stats.speed;
+        _damage = stats.damage;
     }
-
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent<Projectiles>(out var projectile))
+        {
+            TakeDamage(projectile.damage);
+            Destroy(collision.gameObject);
+    }
     public void TakeDamage(int dmg)
     {
-        health -= dmg;
-        if (IsDead)
+        _health -= dmg;
+        if (_health <= 0)
             OnMonsterDestroyed?.Invoke();
     }
 }

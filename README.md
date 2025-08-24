@@ -95,3 +95,8 @@ Factories decouple spawning logic from scene/game logic
 
 Proper prefab setup (scale, pivot, offsets) is critical for consistent UI (HP text) across different monster shapes
 
+
+## **Added ShooterDeath when monster hit**
+
+
+

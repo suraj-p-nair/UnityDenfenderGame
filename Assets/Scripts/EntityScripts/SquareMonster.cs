@@ -11,14 +11,13 @@ public class SquareMonster : Monsters
 
     void Update()
     {
-        if (IsDead)
+        if (Health <= 0 || shooter == null)
         {
             Destroy(gameObject);
             return;
         }
-
         Vector3 direction = (shooter.position - transform.position).normalized;
-        transform.Translate(direction * speed * Time.deltaTime, Space.World);
+        transform.Translate(direction * _speed * Time.deltaTime, Space.World);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
