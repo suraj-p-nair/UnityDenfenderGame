@@ -100,3 +100,16 @@ Proper prefab setup (scale, pivot, offsets) is critical for consistent UI (HP te
 
 
 
+
+## **Restructured Entire Project**
+
+some key concepts that i remember:
+player made as prefab and spawned from GameLogicEngine
+New GameStateEngine made to keep track of all prjectile, mosnter and player stats
+TakeDamage made as a reusable script and given to player and monster
+made physics layer for monster, projectilea and player
+this allows to restrict colliion only to monster <-> player
+and monster<-> bullet
+projectile movement and monster movement made as reusable components
+Centralised all of the existing models and classes
+
