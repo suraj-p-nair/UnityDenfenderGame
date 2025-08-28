@@ -3,13 +3,13 @@ using Assets.Models;
 using Assets.Scripts;
 using Assets.Scripts.Monster;
 using Assets.Scripts.Projectile;
+using TMPro;
 using UnityEngine;
 
 public class TakeDamage : MonoBehaviour
 {
     private IHealth _statsProvider;  // Health of this object
     private int _damage;              // Damage this object deals (for monsters or melee player)
-
     private void Awake()
     {
         // If this is a monster, get its stats
@@ -44,7 +44,6 @@ public class TakeDamage : MonoBehaviour
 
         if (_statsProvider.Health <= 0)
         {
-            Debug.Log($"{gameObject.name} died!");
             Destroy(gameObject);
         }
     }
@@ -60,17 +59,6 @@ public class TakeDamage : MonoBehaviour
             ApplyDamage(bullet.ProjectileStats.Damage);
             Destroy(other.gameObject); // destroy bullet
         }
-        else
-        {
-            if (this.gameObject == other.gameObject)
-            {
-                Debug.Log($"SELF-COLLISION on {this.gameObject.name}");
-            }
-            else
-            {
-                Debug.Log($"Monster {this.gameObject.name} collided with {other.gameObject.name}");
-            }
-        }
 
         // ---------------------------
         // 2️⃣ Monster hits Player
@@ -78,8 +66,6 @@ public class TakeDamage : MonoBehaviour
         if (TryGetComponent<PlayerShooting>(out var player) &&
             other.TryGetComponent<BasicMonster>(out var monsterOther))
         {
-            Debug.Log($"{gameObject.name} hit!");
-
             // Player takes monster's damage
             ApplyDamage(monsterOther.MonsterStats.Damage);
 

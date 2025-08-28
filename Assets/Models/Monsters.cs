@@ -7,13 +7,15 @@ namespace Assets.Models
         public int Damage { get; set; }
         public int Rate { get; set; }
         public int Speed { get; set; }
-        public Monsters(int health, int damage, int rate, int speed)
+        public int Count { get; set; }
+        public Monsters(int health, int damage, int rate, int speed, int count)
         {
             Health = health;
             Damage = damage;
             Rate = rate;
             Speed = speed;
+            Count = count;
         }
-        public Monsters(Monsters other) : this(other.Health, other.Damage, other.Rate, other.Speed) { }
+        public Monsters(Monsters other) : this(other.Health, other.Damage, other.Rate, other.Speed, other.Count) { }
     }
 }

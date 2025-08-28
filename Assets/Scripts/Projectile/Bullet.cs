@@ -10,7 +10,6 @@ namespace Assets.Scripts.Projectile
             gameObject.name = $"Bullet_{Time.frameCount}";
             Projectiles stats = GameStateEngine.Instance.GetProjectileStats(ProjectileType.Bullet);
             ProjectileStats = new Projectiles(stats);
-            Debug.Log($"Projectile Speed: {ProjectileStats.Speed}, Damage: {ProjectileStats.Damage}, Rate: {ProjectileStats.Rate}");
             Destroy(gameObject, 2f);
         }
     }

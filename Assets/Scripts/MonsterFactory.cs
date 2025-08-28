@@ -1,9 +1,9 @@
-﻿using System.Collections;
+﻿using Assets.Models;
+using Assets.Scripts.Monster;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Assets.Scripts.Monster;
-using Assets.Models;
 using static Assets.Models.Enums;
 
 namespace Assets.Scripts
@@ -18,6 +18,9 @@ namespace Assets.Scripts
 
         private readonly List<BasicMonster> _activeMonsters = new();
 
+        // Track total remaining monsters in current round
+        public int RemainingMonsters { get; private set; }
+
         private void Awake()
         {
             if (_instance != null && _instance != this)
@@ -28,25 +31,20 @@ namespace Assets.Scripts
             _instance = this;
         }
 
-        private void Start()
+        public void SpawnWave(Monsters stats)
         {
-            if (MonsterPrefab != null)
-                StartCoroutine(SpawnMonstersCoroutine());
-            else
-                Debug.LogError("MonsterPrefab not assigned in MonsterFactory!");
+            Monsters waveStats = new Monsters(stats); // copy to avoid modifying base stats
+            RemainingMonsters = waveStats.Count;
+            StartCoroutine(SpawnWaveCoroutine(waveStats));
         }
 
-        private IEnumerator SpawnMonstersCoroutine()
+        private IEnumerator SpawnWaveCoroutine(Monsters waveStats)
         {
-            // Get spawn rate from monster stats
-            Monsters stats = GameStateEngine.Instance.GetMonsterStats(MonsterType.Basic);
-
-            while (true)
+            while (waveStats.Count > 0)
             {
                 SpawnMonsterAtRandomEdge();
-
-                // Use monster "Rate" as interval
-                yield return new WaitForSeconds(1f / stats.Rate);
+                waveStats.Count--;
+                yield return new WaitForSeconds(1f / waveStats.Rate);
             }
         }
 
@@ -69,7 +67,7 @@ namespace Assets.Scripts
             return monster;
         }
 
-        // Tracking ---------------------------------------------------
+        // ---------------- Tracking ----------------
 
         public void RegisterMonster(BasicMonster monster)
         {
@@ -79,25 +77,24 @@ namespace Assets.Scripts
 
         public void UnregisterMonster(BasicMonster monster)
         {
-            _activeMonsters.Remove(monster);
-
-            if (_activeMonsters.Count == 0)
+            if (_activeMonsters.Contains(monster))
             {
-                Debug.Log("All monsters defeated! Player wins!");
-                //GameLogicEngine.Instance.OnAllMonstersDefeated();
+                _activeMonsters.Remove(monster);
+                RemainingMonsters--; // decrement as monsters die
             }
         }
 
         public bool HasMonsters() => _activeMonsters.Count > 0;
 
+        public List<BasicMonster> GetAllMonsters() => _activeMonsters;
         public BasicMonster GetNearestMonster(Vector3 position)
         {
             if (_activeMonsters.Count == 0) return null;
+
             return _activeMonsters
                 .OrderBy(m => Vector3.Distance(position, m.transform.position))
                 .FirstOrDefault();
         }
 
-        public List<BasicMonster> GetAllMonsters() => _activeMonsters;
     }
 }

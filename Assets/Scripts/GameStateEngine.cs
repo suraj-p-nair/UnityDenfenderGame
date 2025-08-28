@@ -10,13 +10,15 @@ namespace Assets.Scripts
 {
     public class GameStateEngine : MonoBehaviour
     {
-        public Projectiles BaseProjectileStats = new(damage: 1, rate: 5, speed: 8) ;
-        public Monsters BaseMonsterStats = new(10,10,1,4);
-        public Player BasePlayerStats = new(100);
+        public Projectiles BaseProjectileStats = new(damage: 10, rate: 2, speed: 2) ;
+        public Monsters BaseMonsterStats = new(health: 10,damage: 10,rate: 1,speed: 2, count: 10);
+        public Player BasePlayerStats = new(health: 100);
         public static GameStateEngine Instance { get; private set; }
         public Dictionary<ProjectileType, Projectiles> CurrentProjectileStats;
         public Dictionary<MonsterType, Monsters> CurrentMonsterStats;
         public Player CurrentPlayerStats;
+        public int CurrentRound { get; set; } = 1;
+        public bool IsRoundActive { get; set; } = false;
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -39,7 +41,9 @@ namespace Assets.Scripts
 
         public void UpgradeMonsterStatus()
         {
-            BaseMonsterStats.Health += 5;
+            CurrentMonsterStats[MonsterType.Basic].Health += 5;
+            CurrentMonsterStats[MonsterType.Basic].Count += 2;
+            CurrentMonsterStats[MonsterType.Basic].Damage += 2;
         }
         public Projectiles GetProjectileStats(ProjectileType type) => CurrentProjectileStats[type];
         public Monsters GetMonsterStats(MonsterType type) => CurrentMonsterStats[type];
