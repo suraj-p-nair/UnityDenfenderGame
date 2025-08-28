@@ -113,3 +113,11 @@ and monster<-> bullet
 projectile movement and monster movement made as reusable components
 Centralised all of the existing models and classes
 
+
+## **Added round spawning**
+
+rather than having endless monsters spawn, added a round system inside game engine
+after each round currently the monster stats are upgraded slightly
+added hp display for player and monsters
+added a menu scene before game scene to start game
+
