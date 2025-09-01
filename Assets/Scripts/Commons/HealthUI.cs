@@ -25,7 +25,7 @@ public class HealthUI : MonoBehaviour
         }
 
         // 2) Find the health source (Monster or Player)
-        var monster = GetComponentInParent<BasicMonster>();
+        var monster = GetComponentInParent<MonsterScript>();
         if (monster != null)
         {
             statsProvider = monster.MonsterStats;   // Monsters implements IHealth (model)

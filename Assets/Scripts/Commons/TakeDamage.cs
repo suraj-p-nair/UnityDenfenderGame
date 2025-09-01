@@ -9,11 +9,11 @@ using UnityEngine;
 public class TakeDamage : MonoBehaviour
 {
     private IHealth _statsProvider;  // Health of this object
-    private int _damage;              // Damage this object deals (for monsters or melee player)
+    private double _damage;              // Damage this object deals (for monsters or melee player)
     private void Awake()
     {
         // If this is a monster, get its stats
-        if (TryGetComponent<BasicMonster>(out var monster))
+        if (TryGetComponent<MonsterScript>(out var monster))
         {
             _statsProvider = monster.MonsterStats;
             _damage = monster.MonsterStats.Damage;
@@ -35,7 +35,7 @@ public class TakeDamage : MonoBehaviour
     /// Apply damage to this object
     /// </summary>
     /// <param name="damage">Amount of damage to apply</param>
-    public void ApplyDamage(int damage)
+    public void ApplyDamage(double damage)
     {
         if (_statsProvider == null) return;
 
@@ -53,18 +53,34 @@ public class TakeDamage : MonoBehaviour
         // ---------------------------
         // 1️⃣ Bullet hits Monster
         // ---------------------------
-        if (other.TryGetComponent<Bullet>(out var bullet) &&
-            TryGetComponent<BasicMonster>(out var monster))
+        // ---------------------------
+        // 1️⃣ Bullet hits Monster
+        // ---------------------------
+        if (other.TryGetComponent<ProjectileScript>(out var bullet) &&
+            TryGetComponent<MonsterScript>(out var monster))
         {
-            ApplyDamage(bullet.ProjectileStats.Damage);
-            Destroy(other.gameObject); // destroy bullet
+            double monsterHp = monster.MonsterStats.Health;
+            double bulletDamage = bullet.ProjectileStats.Damage;
+
+            // Apply damage to monster (clamped to its HP)
+            ApplyDamage(bulletDamage);
+
+            // Reduce bullet damage by how much HP was actually taken
+            bullet.ProjectileStats.Damage -= monsterHp;
+
+            // If bullet has no damage left, destroy it
+            if (bullet.ProjectileStats.Damage <= 0)
+            {
+                Destroy(other.gameObject);
+            }
         }
+
 
         // ---------------------------
         // 2️⃣ Monster hits Player
         // ---------------------------
         if (TryGetComponent<PlayerShooting>(out var player) &&
-            other.TryGetComponent<BasicMonster>(out var monsterOther))
+            other.TryGetComponent<MonsterScript>(out var monsterOther))
         {
             // Player takes monster's damage
             ApplyDamage(monsterOther.MonsterStats.Damage);

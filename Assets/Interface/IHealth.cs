@@ -8,7 +8,7 @@ namespace Assets.Interface
 {
     public interface IHealth
     {
-        int Health { get; set; }
+        double Health { get; set; }
         bool IsDead => Health <= 0;
     }
 }

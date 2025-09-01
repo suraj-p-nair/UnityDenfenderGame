@@ -3,12 +3,12 @@ namespace Assets.Models
 {
     public class Monsters : IHealth, IStats
     {
-        public int Health { get; set; }
-        public int Damage { get; set; }
-        public int Rate { get; set; }
-        public int Speed { get; set; }
+        public double Health { get; set; }
+        public double Damage { get; set; }
+        public double Rate { get; set; }
+        public float Speed { get; set; }
         public int Count { get; set; }
-        public Monsters(int health, int damage, int rate, int speed, int count)
+        public Monsters(double health, double damage, double rate, float speed, int count)
         {
             Health = health;
             Damage = damage;

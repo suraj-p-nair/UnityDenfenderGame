@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
-using static Assets.Models.Enums;
 
 namespace Assets.Scripts.Monster
 {
+    [RequireComponent(typeof(MonsterScript))]  // ensures a Monster script exists
     public class MonsterMovement : MonoBehaviour
     {
-        private int _speed;
+        private float _speed;
+        private MonsterScript _monster;
+
+        private void Awake()
+        {
+            _monster = GetComponent<MonsterScript>();
+        }
 
         private void Start()
         {
-            _speed = GameStateEngine.Instance.GetMonsterStats(MonsterType.Basic).Speed;
+            _speed = (float)_monster.MonsterStats.Speed;
         }
 
         private void Update()
@@ -22,3 +28,4 @@ namespace Assets.Scripts.Monster
         }
     }
 }
+

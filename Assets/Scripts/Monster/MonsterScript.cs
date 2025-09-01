@@ -1,18 +1,21 @@
 ﻿using Assets.Models;
-using TMPro;
 using UnityEngine;
 using static Assets.Models.Enums;
+
 namespace Assets.Scripts.Monster
 {
-    public class BasicMonster : MonoBehaviour
+    public class MonsterScript : MonoBehaviour
     {
+        [SerializeField] private MonsterType type; // assign in prefab (Basic, Boss, etc.)
         public Monsters MonsterStats { get; private set; }
-
 
         private void Awake()
         {
-            Monsters stats = GameStateEngine.Instance.GetMonsterStats(MonsterType.Basic);
+            // fetch stats for the given type
+            Monsters stats = GameStateEngine.Instance.GetMonsterStats(type);
             MonsterStats = new Monsters(stats);
+
+            gameObject.name = $"{type}_{Time.frameCount}";
         }
 
         private void OnEnable()
@@ -24,8 +27,6 @@ namespace Assets.Scripts.Monster
         {
             if (MonsterFactory.Instance != null)
                 MonsterFactory.Instance.UnregisterMonster(this);
-
         }
-
     }
 }

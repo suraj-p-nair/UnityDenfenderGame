@@ -1,11 +1,9 @@
 ﻿using Assets.Models;
-using Assets.Scripts.Monster;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Assets.Models.Enums;
-
+using Assets.Scripts.Monster;
 namespace Assets.Scripts
 {
     public class MonsterFactory : MonoBehaviour
@@ -16,7 +14,7 @@ namespace Assets.Scripts
         [Header("Monster Prefab")]
         public GameObject MonsterPrefab;
 
-        private readonly List<BasicMonster> _activeMonsters = new();
+        private readonly List<MonsterScript> _activeMonsters = new();
 
         // Track total remaining monsters in current round
         public int RemainingMonsters { get; private set; }
@@ -33,7 +31,7 @@ namespace Assets.Scripts
 
         public void SpawnWave(Monsters stats)
         {
-            Monsters waveStats = new Monsters(stats); // copy to avoid modifying base stats
+            Monsters waveStats = new Monsters(stats);
             RemainingMonsters = waveStats.Count;
             StartCoroutine(SpawnWaveCoroutine(waveStats));
         }
@@ -44,7 +42,7 @@ namespace Assets.Scripts
             {
                 SpawnMonsterAtRandomEdge();
                 waveStats.Count--;
-                yield return new WaitForSeconds(1f / waveStats.Rate);
+                yield return new WaitForSeconds((float)(1f / waveStats.Rate));
             }
         }
 
@@ -69,13 +67,13 @@ namespace Assets.Scripts
 
         // ---------------- Tracking ----------------
 
-        public void RegisterMonster(BasicMonster monster)
+        public void RegisterMonster(MonsterScript monster)
         {
             if (!_activeMonsters.Contains(monster))
                 _activeMonsters.Add(monster);
         }
 
-        public void UnregisterMonster(BasicMonster monster)
+        public void UnregisterMonster(MonsterScript monster)
         {
             if (_activeMonsters.Contains(monster))
             {
@@ -86,14 +84,39 @@ namespace Assets.Scripts
 
         public bool HasMonsters() => _activeMonsters.Count > 0;
 
-        public List<BasicMonster> GetAllMonsters() => _activeMonsters;
-        public BasicMonster GetNearestMonster(Vector3 position)
+        public List<MonsterScript> GetAllMonsters() => _activeMonsters;
+        public MonsterScript GetNearestMonster(Vector3 position)
         {
             if (_activeMonsters.Count == 0) return null;
 
             return _activeMonsters
                 .OrderBy(m => Vector3.Distance(position, m.transform.position))
                 .FirstOrDefault();
+        }
+
+
+        [Header("Boss Prefab")]
+        public GameObject BossPrefab;
+
+        public GameObject SpawnBoss()
+        {
+            if (BossPrefab == null) return null;
+
+            Camera cam = Camera.main;
+            float camHeight = 2f * cam.orthographicSize;
+            float camWidth = camHeight * cam.aspect;
+
+            Vector3 spawnPos = new Vector3(
+                Random.Range(-camWidth / 2, camWidth / 2),
+                Random.Range(-camHeight / 2, camHeight / 2),
+                0f
+            );
+
+            GameObject boss = Instantiate(BossPrefab, spawnPos, Quaternion.identity);
+            boss.name = $"Boss_{Time.frameCount}";
+
+            RemainingMonsters++; // so round waits for boss to die
+            return boss;
         }
 
     }

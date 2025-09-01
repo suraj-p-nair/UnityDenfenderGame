@@ -3,8 +3,9 @@ namespace Assets.Models
 {
     public class Player : IHealth
     {
-        public int Health { get; set; }
-        public Player(int health)
+        public double Health { get; set; }
+        public int UpgradeCount { get; set; } = 2;
+        public Player(double health)
         {
             Health = health;
         }

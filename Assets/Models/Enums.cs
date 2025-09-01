@@ -10,11 +10,29 @@ namespace Assets.Models
     {
         public enum ProjectileType
         {
-            Bullet
+            Bullet,
+            Fireball
         }
         public enum MonsterType
         {
-            Basic
+            Basic,
+            Boss
+        }
+        public enum UpgradeType
+        {
+            Health,
+            Damage,
+            Speed,
+            Count,
+            Rate
+        }
+
+        public enum UpgradeRarity
+        {
+            Common,
+            Rare,
+            Legendary,
+            Mythical
         }
     }
 }

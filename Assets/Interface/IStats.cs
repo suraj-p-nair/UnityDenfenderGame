@@ -8,8 +8,9 @@ namespace Assets.Interface
 {
     public interface IStats
     {
-        int Damage { get; set; }
-        int Rate { get; set; }
-        int Speed { get; set; }
+        double Damage { get; set; }
+        double Rate { get; set; }
+        float Speed { get; set; }
+        int Count { get; set; }
     }
 }
