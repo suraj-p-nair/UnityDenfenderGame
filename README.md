@@ -121,3 +121,10 @@ after each round currently the monster stats are upgraded slightly
 added hp display for player and monsters
 added a menu scene before game scene to start game
 
+
+## **Added Textures and Upgrades**
+
+added publically available prefabs for projectiles
+added upgrade mechanism to upgrade the player/projectiles upon rarity
+and i dont rememebr what all i did cos i have been making changed continuosly for past 2 days and never committed the changes :)
+
