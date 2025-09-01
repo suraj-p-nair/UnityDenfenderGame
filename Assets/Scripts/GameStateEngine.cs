@@ -10,7 +10,7 @@ namespace Assets.Scripts
 {
     public class GameStateEngine : MonoBehaviour
     {
-        public Projectiles BaseBulletStats = new(damage: 10, rate: 1, speed: 3, count: 3) ;
+        public Projectiles BaseBulletStats = new(damage: 10, rate: 1, speed: 3, count: 1) ;
         public Projectiles BaseFireballStats = new(damage: 20, rate: 2, speed: 1, count: 0) ;
         public Monsters BaseMonsterStats = new(health: 10,damage: 10,rate: 1,speed: 2, count: 10);
         public Monsters BaseBossStats = new(health: 100,damage: 100,rate: 1,speed: 0.5f, count: 1);
